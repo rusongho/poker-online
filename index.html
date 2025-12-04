@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Texas Hold'em AI Arena</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              felt: '#35654d',
+              feltDark: '#234f3b',
+              gold: '#ffd700',
+            },
+            boxShadow: {
+              'card': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15)',
+              'inner-felt': 'inset 0 0 100px rgba(0,0,0,0.5)',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      /* Custom scrollbar for logs */
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-900 text-white h-screen overflow-hidden selection:bg-gold selection:text-black">
+    <div id="root"></div>
+    <!-- IMPORTANT: This script tag is required for Vite to find your React code -->
+    <script type="module" src="/src/index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

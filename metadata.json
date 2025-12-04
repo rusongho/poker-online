@@ -1,0 +1,5 @@
+{
+  "name": "Texas Hold'em AI Arena",
+  "description": "A 9-seater Texas Hold'em Poker game with configurable buy-ins and Gemini-powered hand analysis.",
+  "requestFramePermissions": []
+}
