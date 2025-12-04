@@ -297,8 +297,8 @@ const App: React.FC = () => {
         const newPot = prev.pot + roundPot;
         
         // Explicitly type these arrays to prevent 'never' inference
-        const newDeck: CardType[] = [...prev.deck];
-        let newCommunityCards: CardType[] = [...prev.communityCards];
+        const newDeck = [...prev.deck] as CardType[];
+        let newCommunityCards = [...prev.communityCards] as CardType[];
         
         let nextPhase = prev.phase;
         let logMsg = "";
