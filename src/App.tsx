@@ -296,7 +296,7 @@ const App: React.FC = () => {
         const { updatedPlayers, roundPot } = collectBetsToPot(players);
         const newPot = prev.pot + roundPot;
         
-        // Explicitly type these arrays to prevent 'never' inference
+        // Explicitly type assert using 'as' to fix build error
         const newDeck = [...prev.deck] as CardType[];
         let newCommunityCards = [...prev.communityCards] as CardType[];
         
