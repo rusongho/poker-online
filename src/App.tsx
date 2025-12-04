@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { io, Socket } from "socket.io-client";
 import { 
-  Player, GameState, GamePhase, PlayerStatus, Card as CardType, Rank, Suit 
+  Player, GameState, GamePhase, PlayerStatus, Card as CardType 
 } from './types';
 import { createDeck, shuffleDeck, evaluateHand } from './utils/poker';
 import { getHandAnalysis, getStrategicAdvice } from './services/geminiService';
@@ -52,8 +52,6 @@ const App: React.FC = () => {
   const addLog = (msg: string) => {
     setGameState(prev => ({ ...prev, logs: [...prev.logs, msg] }));
   };
-
-  const getActivePlayerCount = () => players.filter(p => p && p.status !== PlayerStatus.EMPTY && p.status !== PlayerStatus.SITTING_OUT && p.status !== PlayerStatus.BUSTED).length;
 
   const getNextActivePlayerIndex = (startIndex: number, currentPlayers: (Player | null)[]) => {
     let i = (startIndex + 1) % 9;
@@ -297,8 +295,11 @@ const App: React.FC = () => {
     setGameState(prev => {
         const { updatedPlayers, roundPot } = collectBetsToPot(players);
         const newPot = prev.pot + roundPot;
-        const newDeck = [...prev.deck];
-        let newCommunityCards = [...prev.communityCards];
+        
+        // Explicitly type these arrays to prevent 'never' inference
+        const newDeck: CardType[] = [...prev.deck];
+        let newCommunityCards: CardType[] = [...prev.communityCards];
+        
         let nextPhase = prev.phase;
         let logMsg = "";
 
@@ -310,19 +311,25 @@ const App: React.FC = () => {
 
         switch (prev.phase) {
             case GamePhase.PREFLOP:
-                newCommunityCards.push(newDeck.pop()!, newDeck.pop()!, newDeck.pop()!);
-                nextPhase = GamePhase.FLOP;
-                logMsg = "Flop dealt.";
+                if (newDeck.length >= 3) {
+                    newCommunityCards.push(newDeck.pop()!, newDeck.pop()!, newDeck.pop()!);
+                    nextPhase = GamePhase.FLOP;
+                    logMsg = "Flop dealt.";
+                }
                 break;
             case GamePhase.FLOP:
-                newCommunityCards.push(newDeck.pop()!);
-                nextPhase = GamePhase.TURN;
-                logMsg = "Turn dealt.";
+                if (newDeck.length >= 1) {
+                    newCommunityCards.push(newDeck.pop()!);
+                    nextPhase = GamePhase.TURN;
+                    logMsg = "Turn dealt.";
+                }
                 break;
             case GamePhase.TURN:
-                newCommunityCards.push(newDeck.pop()!);
-                nextPhase = GamePhase.RIVER;
-                logMsg = "River dealt.";
+                if (newDeck.length >= 1) {
+                    newCommunityCards.push(newDeck.pop()!);
+                    nextPhase = GamePhase.RIVER;
+                    logMsg = "River dealt.";
+                }
                 break;
             case GamePhase.RIVER:
                 nextPhase = GamePhase.SHOWDOWN;
