@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { io, Socket } from "socket.io-client";
 import { 
-  Player, GameState, GamePhase, PlayerStatus, Card as CardType 
+  Player, GameState, GamePhase, PlayerStatus, Card as PokerCard 
 } from './types';
 import { createDeck, shuffleDeck, evaluateHand } from './utils/poker';
 import { getHandAnalysis, getStrategicAdvice } from './services/geminiService';
@@ -296,9 +297,9 @@ const App: React.FC = () => {
         const { updatedPlayers, roundPot } = collectBetsToPot(players);
         const newPot = prev.pot + roundPot;
         
-        // Explicitly type assert using 'as' to fix build error
-        const newDeck = [...prev.deck] as CardType[];
-        let newCommunityCards = [...prev.communityCards] as CardType[];
+        // Explicitly define types to prevent TS never[] inference error
+        const newDeck: PokerCard[] = [...prev.deck];
+        let newCommunityCards: PokerCard[] = [...prev.communityCards];
         
         let nextPhase = prev.phase;
         let logMsg = "";
@@ -376,7 +377,7 @@ const App: React.FC = () => {
     });
   };
 
-  const computeWinners = (currentPlayers: (Player|null)[], board: CardType[], totalPot: number) => {
+  const computeWinners = (currentPlayers: (Player|null)[], board: PokerCard[], totalPot: number) => {
       const candidates = currentPlayers.filter(p => p && p.status !== PlayerStatus.FOLDED && p.status !== PlayerStatus.BUSTED);
       
       const evaluations = candidates.map(p => {
@@ -411,7 +412,7 @@ const App: React.FC = () => {
       return resultWinners;
   };
 
-  const handleShowdown = (currentPlayers: (Player|null)[], board: CardType[], totalPot: number, foldedWin: boolean = false) => {
+  const handleShowdown = (currentPlayers: (Player|null)[], board: PokerCard[], totalPot: number, foldedWin: boolean = false) => {
       if (foldedWin) {
           const winner = currentPlayers.find(p => p && p.status !== PlayerStatus.FOLDED && p.status !== PlayerStatus.BUSTED);
           if (winner) {
